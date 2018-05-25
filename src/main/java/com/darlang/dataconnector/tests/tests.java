@@ -32,11 +32,12 @@ public class tests {
         }*/
         try {
             DarlangExecutor darlangExecutor = new DarlangExecutor(DBConnection.getConexao());
-            //darlangExecutor.executeScript(query);           
+            //darlangExecutor.executeScript(query);
             Scanner scanner = new Scanner(System.in);
             while (true) {
                 System.out.print("> ");
                 String in = scanner.nextLine();
+                System.out.println("1");
                 darlangExecutor.addQuery(in);
                 darlangExecutor.execute();
                 System.out.println("-------------------------");
