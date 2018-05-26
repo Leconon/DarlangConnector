@@ -17,7 +17,7 @@ public enum Command {
 
             String lastResult = "";
             if (lastTable != null) {
-                lastResult = "\"" + lastTable + "\", ";
+                lastResult = lastTable + ", ";
             }
 
             String sql = "select * from " + lastResult + parm;
@@ -28,7 +28,7 @@ public enum Command {
     SELECT("select", false) {
         @Override
         public String createSql(String lastTable, String parm) throws Exception {
-            String sql = "select " + parm + " from \"" + lastTable + "\"";
+            String sql = "select " + parm + " from " + lastTable;
             return sql;
         }
     },
@@ -36,8 +36,8 @@ public enum Command {
     FILTER("filter", false) {
         @Override
         public String createSql(String lastTable, String parm) throws Exception {
-            String sql = "select * from \"" + lastTable + "\" "
-                    + "where " + parm + ")";
+            String sql = "select * from " + lastTable + " "
+                    + "where " + parm;
             return sql;
         }
     },
@@ -45,7 +45,7 @@ public enum Command {
     PRINT("print", true) {
         @Override
         public String createSql(String lastTable, String parm) throws Exception {
-            String sql = "select * from \"" + lastTable + "\"";
+            String sql = "select * from " + lastTable;
             return sql;
         }
     },

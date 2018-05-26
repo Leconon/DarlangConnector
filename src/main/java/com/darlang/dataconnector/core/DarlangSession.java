@@ -23,7 +23,7 @@ public class DarlangSession {
     }
 
     public Line addLine(String input) {
-        Line line = new Line(lines.size(), input);
+        Line line = new Line(lines.size() + 1, input);
         lines.add(line);
         return line;
     }

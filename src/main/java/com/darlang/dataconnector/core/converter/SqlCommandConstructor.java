@@ -9,7 +9,7 @@ import java.util.List;
  */
 public class SqlCommandConstructor {
 
-    private int lineIndex;
+    private final int lineIndex;
     private int commandIndex = 1;
 
     public SqlCommandConstructor(int lineIndex) {
@@ -26,7 +26,7 @@ public class SqlCommandConstructor {
     private List<String> createSqlList(List<Object> line) throws Exception {
         Command actualCommand = null;
         String parms = "";
-        String refName = createReferenceName(lineIndex - 1, false);
+        String refName = (lineIndex == 1 ? null : createReferenceName(lineIndex - 1, false));
         List<String> sqlQueries = new ArrayList<>();
         for (Object obj : line) {
             if (obj instanceof String) {
@@ -55,14 +55,14 @@ public class SqlCommandConstructor {
     }
 
     private String createSqlCommand(List<String> queries) {
-        String sql = "with ";
-        int i = 1;
+        String sql = " create temporary table " + createReferenceName(lineIndex, false)
+                + " as with ";
+        int i = 0;
         for (String query : queries) {
-            sql += createReferenceName(i++, true) + " as ("
-                    + query + "), ";
+            sql += createReferenceName(++i, true) + " as ("
+                    + query + ")" + (i == queries.size() ? "" : ", ");
         }
-        sql += "create temporary table " + createReferenceName(lineIndex, false)
-                + " as select * from " + createReferenceName(i, true);
+        sql += "select * from " + createReferenceName(i, true);
         return sql;
     }
 
