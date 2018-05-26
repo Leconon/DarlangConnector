@@ -1,6 +1,8 @@
 package com.darlang.dataconnector.tests;
 
 import com.darlang.dataconnector.DarlangExecutor;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.Scanner;
 import java.util.logging.Level;
@@ -35,11 +37,21 @@ public class tests {
             //darlangExecutor.executeScript(query);
             Scanner scanner = new Scanner(System.in);
             while (true) {
-                System.out.print("> ");
+                System.out.print(">> ");
+
+                double ini, fim;
+                ini = System.nanoTime();
+
                 String in = scanner.nextLine();
-                System.out.println("1");
                 darlangExecutor.addQuery(in);
-                darlangExecutor.execute();
+                ResultSet rs = darlangExecutor.execute();
+
+                fim = System.nanoTime();
+                System.out.println("> " + (fim - ini));
+
+                System.out.println("");
+                print(rs);
+                
                 System.out.println("-------------------------");
             }
         } catch (ClassNotFoundException | SQLException ex) {
@@ -54,6 +66,26 @@ public class tests {
             Logger.getLogger(tests.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+    }
+
+    private static void print(ResultSet rs) {
+        try {
+            ResultSet resultSet = rs;
+            ResultSetMetaData rsmd = resultSet.getMetaData();
+            int columnsNumber = rsmd.getColumnCount();
+            while (resultSet.next()) {
+                for (int i = 1; i <= columnsNumber; i++) {
+                    if (i > 1) {
+                        System.out.print(",  ");
+                    }
+                    String columnValue = resultSet.getString(i);
+                    System.out.print(columnValue + " " + rsmd.getColumnName(i));
+                }
+                System.out.println("");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(tests.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
 }

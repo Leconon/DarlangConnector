@@ -2,6 +2,7 @@ package com.darlang.dataconnector.core.converter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 /**
  *
@@ -12,15 +13,29 @@ public class SqlCommandConstructor {
     private final int lineIndex;
     private int commandIndex = 1;
 
-    public SqlCommandConstructor(int lineIndex) {
-        System.out.println("8");
+    public SqlCommandConstructor(int lineIndex) {        
         this.lineIndex = lineIndex;
     }
 
-    public String lineToSql(List<Object> line) throws Exception {
-        System.out.println("9");
-        List<String> sqlList = createSqlList(line);
+    public String lineToSql(String line) throws Exception {
+        List<Object> processedLine = processQuery(line);
+        List<String> sqlList = createSqlList(processedLine);
         return createSqlCommand(sqlList);
+    }
+    
+    private List<Object> processQuery(String query) {        
+        query = replaceSimbols(query);
+        List<Object> queryObject = new ArrayList<>();
+        for (StringTokenizer tknQuery = new StringTokenizer(query, " ", true); tknQuery.hasMoreTokens();) {
+            String token = tknQuery.nextToken();
+            queryObject.add(Command.findCommand(token));
+        }
+        return queryObject;
+    }
+
+    private String replaceSimbols(String query) {
+        query = query.replace(";", " ; ");
+        return query;
     }
 
     private List<String> createSqlList(List<Object> line) throws Exception {
